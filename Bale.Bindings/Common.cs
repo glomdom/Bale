@@ -1,5 +1,5 @@
 ﻿namespace Bale.Bindings;
 
 public static class Common {
-    public static IntPtr NULL = IntPtr.Zero;
+    public static readonly IntPtr NULL = IntPtr.Zero;
 }
