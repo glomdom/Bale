@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Bale.Bindings;
+namespace Bale.Bindings.Native;
 
 public static partial class GLFW {
     static GLFW() {
@@ -33,16 +33,23 @@ public static partial class GLFW {
     [LibraryImport("glfw3")]
     public static partial void glfwSwapBuffers(IntPtr window);
 
+    [LibraryImport("glfw3")]
+    public static partial int glfwCreateWindowSurface(IntPtr instance, IntPtr window, IntPtr allocator, out IntPtr surface);
+
     #region CONSTANTS
 
     public const int GLFW_TRUE = 1;
     public const int GLFW_FALSE = 0;
 
     public const int GLFW_RESIZEABLE = 0x00020003;
+
     public const int GLFW_CONTEXT_VERSION_MAJOR = 0x00022002;
     public const int GLFW_CONTEXT_VERSION_MINOR = 0x00022003;
     public const int GLFW_OPENGL_PROFILE = 0x00022008;
     public const int GLFW_OPENGL_CORE_PROFILE = 0x00032001;
+
+    public const int GLFW_CLIENT_API = 0x00022001;
+    public const int GLFW_NO_API = 0;
 
     #endregion
 }
