@@ -16,7 +16,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
 
-        <None Include="lib/win-x64/glad.dll" Link="glad.dll">
+        <None Include="lib/win-x64/vulkan-1.dll" Link="vulkan-1.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
 
