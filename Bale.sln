@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Bindings", "Bale.Bindings\Bale.Bindings.csproj", "{9B9CA0A1-D099-44BE-B271-25B09D018D25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale", "Bale\Bale.csproj", "{8E22344B-AD61-49CF-86FF-636D09906CED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B9CA0A1-D099-44BE-B271-25B09D018D25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B9CA0A1-D099-44BE-B271-25B09D018D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B9CA0A1-D099-44BE-B271-25B09D018D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B9CA0A1-D099-44BE-B271-25B09D018D25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E22344B-AD61-49CF-86FF-636D09906CED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E22344B-AD61-49CF-86FF-636D09906CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E22344B-AD61-49CF-86FF-636D09906CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E22344B-AD61-49CF-86FF-636D09906CED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal

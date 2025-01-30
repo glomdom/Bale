@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Bale.GLFW</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Windows -->
+        <None Include="lib/win-x64/glfw3.dll" Link="glfw3.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <None Include="lib/win-x64/glad.dll" Link="glad.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+<!--        &lt;!&ndash; Linux &ndash;&gt;-->
+<!--        <None Include="lib/linux-x64/libglfw.so" Link="libglfw.so">-->
+<!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--        </None>-->
+
+<!--        &lt;!&ndash; macOS &ndash;&gt;-->
+<!--        <None Include="lib/osx-x64/libglfw.dylib" Link="libglfw.dylib">-->
+<!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--        </None>-->
+    </ItemGroup>
+
+</Project>
