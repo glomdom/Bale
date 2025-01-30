@@ -11,12 +11,6 @@ public static class NativeResolver {
                 { OSPlatform.Linux, "libglfw.so" },
                 { OSPlatform.OSX, "libglfw.dylib" }
             }
-        }, {
-            "glad", new() {
-                { OSPlatform.Windows, "glad.dll" },
-                { OSPlatform.Linux, "libglad.so" },
-                { OSPlatform.OSX, "libglad.dylib" }
-            }
         }
     };
 

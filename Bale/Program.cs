@@ -1,5 +1,4 @@
-﻿using static Bale.Bindings.GL;
-using static Bale.Bindings.GLFW;
+﻿using static Bale.Bindings.Native.GLFW;
 using static Bale.Bindings.Common;
 
 if (!glfwInit()) {
@@ -19,9 +18,6 @@ if (window == NULL) {
 glfwMakeContextCurrent(window);
 
 while (!glfwWindowShouldClose(window)) {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(0x00004000);
-    
     glfwPollEvents();
     glfwSwapBuffers(window);
 }
