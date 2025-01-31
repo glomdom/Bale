@@ -80,4 +80,43 @@ public static partial class VulkanLow {
         uint queueIndex,
         out IntPtr pQueue
     );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+        IntPtr device,
+        IntPtr surface,
+        out VkSurfaceCapabilitiesKHR pSurfaceCapabilities
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkGetPhysicalDeviceSurfaceFormatsKHR(
+        IntPtr physicalDevice,
+        IntPtr surface,
+        ref uint pSurfaceFormatCount,
+        IntPtr pSurfaceFormats
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
+        IntPtr physicalDevice,
+        IntPtr surface,
+        ref uint pPresentModeCount,
+        IntPtr pPresentModes
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateSwapchainKHR(
+        IntPtr device,
+        ref VkSwapchainCreateInfoKHR pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pSwapchain
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkGetSwapchainImagesKHR(
+        IntPtr device,
+        IntPtr swapchain,
+        ref uint pSwapchainImageCount,
+        IntPtr pSwapchainImages
+    );
 }
