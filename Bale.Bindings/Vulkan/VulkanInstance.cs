@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Bale.Bindings.Native;
 using Bale.Bindings.Native.Vulkan;
+using Bale.Bindings.Utilities;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -10,8 +11,8 @@ public sealed class VulkanInstance : IDisposable {
 
     public VulkanInstance(string appName, Version version) {
         var extensions = GetGlfwRequiredExtensions();
-        var pAppName = Marshal.StringToHGlobalAnsi(appName);
-
+        using var pAppName = new MarshaledString(appName);
+        
         var appInfo = new VkApplicationInfo {
             sType = VkStructureType.VK_STRUCTURE_TYPE_APPLICATION_INFO,
             pApplicationName = pAppName,
@@ -19,20 +20,17 @@ public sealed class VulkanInstance : IDisposable {
             apiVersion = Vk.MakeApiVersion(0, 1, 4, 0)
         };
 
+        using var pAppInfo = new MarshaledStruct<VkApplicationInfo>(appInfo);
+        using var pExtensions = new MarshaledStringArray(extensions);
+
         var createInfo = new VkInstanceCreateInfo {
             sType = VkStructureType.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-            pApplicationInfo = Marshal.AllocHGlobal(Marshal.SizeOf<VkApplicationInfo>()),
+            pApplicationInfo = pAppInfo,
             enabledExtensionCount = (uint)extensions.Length,
-            ppEnabledExtensionNames = MarshalExtensions(extensions)
+            ppEnabledExtensionNames = pExtensions
         };
 
-        Marshal.StructureToPtr(appInfo, createInfo.pApplicationInfo, false);
-
         var result = VulkanLow.vkCreateInstance(ref createInfo, NULL, out Handle);
-
-        Marshal.FreeHGlobal(createInfo.pApplicationInfo);
-        Marshal.FreeHGlobal(pAppName);
-        FreeExtensions(createInfo.ppEnabledExtensionNames, extensions.Length);
 
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to create Vulkan instance: {result}");
@@ -52,25 +50,6 @@ public sealed class VulkanInstance : IDisposable {
         }
 
         return extensions;
-    }
-
-    private IntPtr MarshalExtensions(string[] extensions) {
-        var ptrArray = Marshal.AllocHGlobal(extensions.Length * IntPtr.Size);
-        for (var i = 0; i < extensions.Length; i++) {
-            var extensionPtr = Marshal.StringToHGlobalAnsi(extensions[i]);
-            Marshal.WriteIntPtr(ptrArray, i * IntPtr.Size, extensionPtr);
-        }
-
-        return ptrArray;
-    }
-
-    private void FreeExtensions(IntPtr ptr, int count) {
-        for (var i = 0; i < count; i++) {
-            var extensionPtr = Marshal.ReadIntPtr(ptr, i * IntPtr.Size);
-            Marshal.FreeHGlobal(extensionPtr);
-        }
-
-        Marshal.FreeHGlobal(ptr);
     }
 
     public void Dispose() {
