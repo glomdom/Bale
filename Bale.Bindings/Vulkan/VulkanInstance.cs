@@ -33,7 +33,6 @@ public sealed class VulkanInstance : IDisposable {
         Marshal.FreeHGlobal(createInfo.pApplicationInfo);
         Marshal.FreeHGlobal(pAppName);
         FreeExtensions(createInfo.ppEnabledExtensionNames, extensions.Length);
-        Console.WriteLine("freed marshals");
 
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to create Vulkan instance: {result}");
@@ -42,16 +41,15 @@ public sealed class VulkanInstance : IDisposable {
 
     private string[] GetGlfwRequiredExtensions() {
         var ptr = GLFW.glfwGetRequiredInstanceExtensions(out var count);
-        if (ptr == IntPtr.Zero)
+        if (ptr == IntPtr.Zero) {
             throw new Exception("GLFW failed to get required Vulkan extensions.");
+        }
 
         var extensions = new string[count];
         for (var i = 0; i < count; i++) {
             var extensionPtr = Marshal.ReadIntPtr(ptr, i * IntPtr.Size);
             extensions[i] = Marshal.PtrToStringAnsi(extensionPtr)!;
         }
-        
-        Console.WriteLine("got extension names");
 
         return extensions;
     }
@@ -62,8 +60,6 @@ public sealed class VulkanInstance : IDisposable {
             var extensionPtr = Marshal.StringToHGlobalAnsi(extensions[i]);
             Marshal.WriteIntPtr(ptrArray, i * IntPtr.Size, extensionPtr);
         }
-        
-        Console.WriteLine("marshalled extensions");
 
         return ptrArray;
     }
@@ -81,6 +77,6 @@ public sealed class VulkanInstance : IDisposable {
         if (Handle == NULL) return;
 
         VulkanLow.vkDestroyInstance(Handle, NULL);
-        Handle = NULL;
+        Handle = NULL; 
     }
 }
