@@ -11,6 +11,13 @@ public static class NativeResolver {
                 { OSPlatform.Linux, "libglfw.so" },
                 { OSPlatform.OSX, "libglfw.dylib" }
             }
+        },
+        {
+            "vulkan-1", new() {
+                { OSPlatform.Windows, "vulkan-1.dll" },
+                // { OSPlatform.Linux, "libglfw.so" },
+                // { OSPlatform.OSX, "libglfw.dylib" }
+            }
         }
     };
 
@@ -18,12 +25,15 @@ public static class NativeResolver {
         NativeLibrary.SetDllImportResolver(typeof(NativeResolver).Assembly, ResolveLibrary);
     }
 
-    private static IntPtr ResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchpath) {
+    private static IntPtr ResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath) {
         if (!LibraryMappings.TryGetValue(libraryName, out var mappings)) return IntPtr.Zero;
+        if (mappings == null) {
+            throw new PlatformNotSupportedException("Mappings not found for the platform: " + libraryName);
+        }
 
         foreach (var (platform, libraryPath) in mappings) {
             if (RuntimeInformation.IsOSPlatform(platform)) {
-                return NativeLibrary.Load(libraryPath, assembly, searchpath);
+                return NativeLibrary.Load(libraryPath, assembly, searchPath);
             }
         }
 

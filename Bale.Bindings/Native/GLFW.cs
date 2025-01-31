@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Bale.Bindings.Native.Vulkan;
 
 namespace Bale.Bindings.Native;
 
@@ -34,7 +35,10 @@ public static partial class GLFW {
     public static partial void glfwSwapBuffers(IntPtr window);
 
     [LibraryImport("glfw3")]
-    public static partial int glfwCreateWindowSurface(IntPtr instance, IntPtr window, IntPtr allocator, out IntPtr surface);
+    public static partial VkResult glfwCreateWindowSurface(IntPtr instance, IntPtr window, IntPtr allocator, out IntPtr surface);
+
+    [LibraryImport("glfw3")]
+    public static partial IntPtr glfwGetRequiredInstanceExtensions(out uint count);
 
     #region CONSTANTS
 
