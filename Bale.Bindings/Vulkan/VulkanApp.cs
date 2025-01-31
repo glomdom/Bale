@@ -1,4 +1,7 @@
-﻿using Bale.Bindings.Native.Vulkan;
+﻿using System.Runtime.InteropServices;
+using System.Text;
+using Bale.Bindings.Native;
+using Bale.Bindings.Native.Vulkan;
 using static Bale.Bindings.Native.GLFW;
 using static Bale.Bindings.Common;
 
@@ -8,6 +11,7 @@ public sealed class VulkanApp : IDisposable {
     private IntPtr _window;
     private readonly VulkanInstance _vulkanInstance;
     private IntPtr _surface;
+    private IntPtr _physicalDevice;
 
     public VulkanApp(string appName, int width, int height) {
         InitGLFW();
@@ -15,8 +19,28 @@ public sealed class VulkanApp : IDisposable {
 
         _vulkanInstance = new VulkanInstance(appName, new Version(1, 0, 0));
         CreateSurface();
+        PickPhysicalDevice();
     }
 
+    public void Run() {
+        while (!glfwWindowShouldClose(_window)) {
+            glfwPollEvents();
+        }
+    }
+
+    public void Dispose() {
+        if (_surface != NULL) {
+            VulkanLow.vkDestroySurfaceKHR(_vulkanInstance.Handle, _surface, NULL);
+            _surface = NULL;
+        }
+
+        if (_vulkanInstance.Handle != NULL) {
+            _vulkanInstance.Dispose();
+        }
+        
+        glfwTerminate();
+    }
+    
     private void InitGLFW() {
         if (!glfwInit()) {
             throw new Exception("Failed to initialize GLFW");
@@ -42,14 +66,67 @@ public sealed class VulkanApp : IDisposable {
         Console.WriteLine($"Created Vulkan surface with result: {result}");
     }
 
-    public void Run() {
-        while (!glfwWindowShouldClose(_window)) {
-            glfwPollEvents();
+    private void PickPhysicalDevice() {
+        uint deviceCount = 0;
+        VulkanLow.vkEnumeratePhysicalDevices(_vulkanInstance.Handle, ref deviceCount, NULL);
+
+        if (deviceCount == 0) {
+            throw new Exception("Failed to find GPUs with Vulkan support");
         }
+        
+        var devices = new IntPtr[deviceCount];
+        VulkanLow.vkEnumeratePhysicalDevices(_vulkanInstance.Handle, ref deviceCount, Marshal.UnsafeAddrOfPinnedArrayElement(devices, 0));
+
+        _physicalDevice = devices
+            .Select(d => (device: d, score: RateDeviceSuitability(d)))
+            .Where(d => d.score > 0)
+            .OrderByDescending(d => d.score)
+            .FirstOrDefault().device;
+
+        if (_physicalDevice == NULL) {
+            throw new Exception("Failed to find a suitable GPU");
+        }
+        
+        Console.WriteLine("Selected Vulkan-compatible GPU");
     }
 
-    public void Dispose() {
-        glfwTerminate();
-        _vulkanInstance?.Dispose();
+    private int RateDeviceSuitability(IntPtr device) {
+        VulkanLow.vkGetPhysicalDeviceProperties(device, out var properties);
+
+        var deviceName = GetDeviceName(ref properties);
+        Console.WriteLine($"Checking GPU: {deviceName}");
+
+        if (!CheckQueueFamilies(device)) {
+            return 0; // not suitable
+        }
+        
+        var score = properties.deviceType == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0;
+        score += (int)properties.limits.maxImageDimension2D;
+        
+        Console.WriteLine($"GPU '{deviceName}' suitability score: {score}");
+        
+        return score;
+    }
+
+    private bool CheckQueueFamilies(IntPtr device) {
+        uint queueFamilyCount = 0;
+        VulkanLow.vkGetPhysicalDeviceQueueFamilyProperties(device, ref queueFamilyCount, NULL);
+
+        if (queueFamilyCount == 0) {
+            return false;
+        }
+        
+        var queueFamilies = new VkQueueFamilyProperties[queueFamilyCount];
+        VulkanLow.vkGetPhysicalDeviceQueueFamilyProperties(device, ref queueFamilyCount, Marshal.UnsafeAddrOfPinnedArrayElement(queueFamilies, 0));
+
+        return queueFamilies.Any(q => (q.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0);
+    }
+
+    private static string GetDeviceName(ref VkPhysicalDeviceProperties properties) {
+        unsafe {
+            fixed (byte* namePtr = properties.deviceName) {
+                return Encoding.ASCII.GetString(namePtr, 256).Split('\0')[0];
+            }
+        }
     }
 }

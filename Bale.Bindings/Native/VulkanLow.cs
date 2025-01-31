@@ -23,4 +23,31 @@ public static partial class VulkanLow {
         IntPtr instance,
         IntPtr pAllocator
     );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkEnumeratePhysicalDevices(
+        IntPtr instance,
+        ref uint pPhysicalDeviceCount,
+        IntPtr pPhysicalDevices
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkGetPhysicalDeviceProperties(
+        IntPtr physicalDevice,
+        out VkPhysicalDeviceProperties pProperties
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkGetPhysicalDeviceQueueFamilyProperties(
+        IntPtr physicalDevice,
+        ref uint pQueueFamilyPropertiesCount,
+        IntPtr pQueueFamilyProperties
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroySurfaceKHR(
+        IntPtr instance,
+        IntPtr surface,
+        IntPtr allocator
+    );
 }
