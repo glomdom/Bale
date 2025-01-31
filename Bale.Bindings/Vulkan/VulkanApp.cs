@@ -1,11 +1,3 @@
-using System.Runtime.InteropServices;
-using System.Text;
-using Bale.Bindings.Native;
-using Bale.Bindings.Native.Vulkan;
-using Bale.Bindings.Utilities;
-using static Bale.Bindings.Native.GLFWLow;
-using static Bale.Bindings.Common;
-
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanApp : IDisposable {
