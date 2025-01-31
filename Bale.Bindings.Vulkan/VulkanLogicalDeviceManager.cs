@@ -32,7 +32,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
     }
 
     private void CreateDeviceAndQueues(IntPtr physicalDevice, IntPtr surface) {
-        _logger.LogInformation("selecting Vulkan queue families");
+        _logger.LogInformation("selecting queue families");
 
         uint queueFamilyCount = 0;
         VulkanLow.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, ref queueFamilyCount, NULL);
@@ -108,7 +108,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
         VulkanLow.vkGetDeviceQueue(_device, (uint)graphicsFamily, 0, out _graphicsQueue);
         VulkanLow.vkGetDeviceQueue(_device, (uint)presentFamily, 0, out _presentQueue);
 
-        _logger.LogInformation("Vulkan logical device created successfully");
+        _logger.LogInformation("logical device created");
     }
 
     public void Dispose() {

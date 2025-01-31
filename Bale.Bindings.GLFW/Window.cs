@@ -23,7 +23,7 @@ public sealed class Window : IDisposable {
             throw new Exception("Failed to create GLFW window");
         }
         
-        _logger.LogInformation("created glfw window");
+        _logger.LogInformation("created GLFW window");
     }
 
     public IntPtr Handle => _window;

@@ -22,7 +22,7 @@ public sealed class VulkanSurfaceManager : IDisposable {
             throw new Exception($"Failed to create Vulkan surface: {result}");
         }
 
-        _logger.LogInformation("created Vulkan surface successfully");
+        _logger.LogInformation("created Vulkan surface");
     }
     
     public IntPtr Surface => _surface;
