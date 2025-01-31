@@ -3,8 +3,8 @@ using Bale.Bindings.Native.Vulkan;
 
 namespace Bale.Bindings.Native;
 
-public static partial class GLFW {
-    static GLFW() {
+public static partial class GLFWLow {
+    static GLFWLow() {
         _ = typeof(NativeResolver);
     }
 

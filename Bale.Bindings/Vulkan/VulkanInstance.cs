@@ -38,7 +38,7 @@ public sealed class VulkanInstance : IDisposable {
     }
 
     private string[] GetGlfwRequiredExtensions() {
-        var ptr = GLFW.glfwGetRequiredInstanceExtensions(out var count);
+        var ptr = GLFWLow.glfwGetRequiredInstanceExtensions(out var count);
         if (ptr == IntPtr.Zero) {
             throw new Exception("GLFW failed to get required Vulkan extensions.");
         }

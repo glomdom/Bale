@@ -2,7 +2,7 @@
 using System.Text;
 using Bale.Bindings.Native;
 using Bale.Bindings.Native.Vulkan;
-using static Bale.Bindings.Native.GLFW;
+using static Bale.Bindings.Native.GLFWLow;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
