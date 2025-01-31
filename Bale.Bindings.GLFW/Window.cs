@@ -1,12 +1,16 @@
-﻿using static Bale.Bindings.Common;
+﻿using Microsoft.Extensions.Logging;
+using static Bale.Bindings.Common;
 using static Bale.Bindings.Native.GLFWLow;
 
 namespace Bale.Bindings.Vulkan;
 
 public sealed class Window : IDisposable {
     private IntPtr _window;
+    private readonly ILogger<Window> _logger;
 
-    public Window(int width, int height, string title) {
+    public Window(int width, int height, string title, ILogger<Window> logger) {
+        _logger = logger;
+        
         if (!glfwInit()) {
             throw new Exception("Failed to initialize GLFW");
         }
@@ -18,6 +22,8 @@ public sealed class Window : IDisposable {
         if (_window == NULL) {
             throw new Exception("Failed to create GLFW window");
         }
+        
+        _logger.LogInformation("created glfw window");
     }
 
     public IntPtr Handle => _window;

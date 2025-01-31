@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using Bale.Bindings.Native;
 using Bale.Bindings.Native.Vulkan;
 using Bale.Bindings.Utilities;
+using Microsoft.Extensions.Logging;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -10,7 +11,11 @@ public sealed class VulkanInstance : IDisposable {
     public IntPtr Handle => _handle;
     private IntPtr _handle;
 
-    public VulkanInstance(string appName, Version version) {
+    private readonly ILogger<VulkanInstance> _logger;
+
+    public VulkanInstance(string appName, Version version, ILogger<VulkanInstance> logger) {
+        _logger = logger;
+        
         var extensions = GetGlfwRequiredExtensions();
         using var pAppName = new MarshaledString(appName);
 
@@ -35,6 +40,8 @@ public sealed class VulkanInstance : IDisposable {
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to create Vulkan instance: {result}");
         }
+        
+        _logger.LogInformation("created Vulkan instance");
     }
 
     private string[] GetGlfwRequiredExtensions() {

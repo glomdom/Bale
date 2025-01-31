@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanApp : IDisposable {
@@ -5,26 +7,34 @@ public sealed class VulkanApp : IDisposable {
     private readonly VulkanInstance _vulkanInstance;
     private readonly VulkanSurfaceManager _vulkanSurfaceManager;
     private readonly VulkanLogicalDeviceManager _vulkanLogicalDeviceManager;
+    private readonly ILogger<VulkanApp> _logger;
 
-    public VulkanApp(string appName, int width, int height) {
-        _window = new Window(width, height, appName);
-        _vulkanInstance = new VulkanInstance(appName, new Version(0, 0, 1));
-        _vulkanSurfaceManager = new VulkanSurfaceManager(_vulkanInstance.Handle, _window);
-
-        var vulkanPhysicalDeviceSelector = new VulkanPhysicalDeviceSelector(_vulkanInstance.Handle, _vulkanSurfaceManager.Surface);
-        _vulkanLogicalDeviceManager = new VulkanLogicalDeviceManager(vulkanPhysicalDeviceSelector.PhysicalDevice, _vulkanSurfaceManager.Surface);
+    public VulkanApp(
+        Window window,
+        VulkanInstance vulkanInstance,
+        VulkanSurfaceManager vulkanSurfaceManager,
+        VulkanLogicalDeviceManager vulkanLogicalDeviceManager,
+        ILogger<VulkanApp> logger
+    ) {
+        _logger = logger;
+        _window = window;
+        _vulkanInstance = vulkanInstance;
+        _vulkanSurfaceManager = vulkanSurfaceManager;
+        _vulkanLogicalDeviceManager = vulkanLogicalDeviceManager;
     }
-    
+
     public void Run() {
         while (!_window.ShouldClose) {
             _window.PollEvents();
         }
     }
-    
+
     public void Dispose() {
         _vulkanLogicalDeviceManager.Dispose();
         _vulkanSurfaceManager.Dispose();
         _vulkanInstance.Dispose();
         _window.Dispose();
+
+        _logger.LogInformation("disposed all managed objects");
     }
 }

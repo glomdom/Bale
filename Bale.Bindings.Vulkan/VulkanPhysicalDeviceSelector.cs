@@ -2,29 +2,38 @@
 using System.Text;
 using Bale.Bindings.Native;
 using Bale.Bindings.Native.Vulkan;
+using Microsoft.Extensions.Logging;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanPhysicalDeviceSelector {
-    private readonly IntPtr _instanceHandle;
-    private readonly IntPtr _surface;
-
     public IntPtr PhysicalDevice { get; }
 
-    public VulkanPhysicalDeviceSelector(IntPtr instanceHandle, IntPtr surface) {
-        _instanceHandle = instanceHandle;
-        _surface = surface;
+    private readonly VulkanInstance _vulkanInstance;
+    private readonly VulkanSurfaceManager _surfaceManager;
+    private readonly ILogger<VulkanPhysicalDeviceSelector> _logger;
+
+    public VulkanPhysicalDeviceSelector(
+        VulkanInstance vulkanInstance,
+        VulkanSurfaceManager surfaceManager,
+        ILogger<VulkanPhysicalDeviceSelector> logger
+    ) {
+        _vulkanInstance = vulkanInstance;
+        _surfaceManager = surfaceManager;
+        _logger = logger;
+
         PhysicalDevice = PickPhysicalDevice();
         if (PhysicalDevice == NULL) {
-            throw new Exception("Failed to find a suitable GPU");
+            throw new Exception("Failed to find Vulkan-compatible GPU");
         }
-        Console.WriteLine("Selected Vulkan-compatible GPU.");
+        
+        _logger.LogInformation("selected physical device");
     }
 
     private IntPtr PickPhysicalDevice() {
         uint deviceCount = 0;
-        VulkanLow.vkEnumeratePhysicalDevices(_instanceHandle, ref deviceCount, NULL);
+        VulkanLow.vkEnumeratePhysicalDevices(_vulkanInstance.Handle, ref deviceCount, NULL);
 
         if (deviceCount == 0) {
             throw new Exception("Failed to find GPUs with Vulkan support");
@@ -32,12 +41,11 @@ public sealed class VulkanPhysicalDeviceSelector {
 
         var devices = new IntPtr[deviceCount];
         VulkanLow.vkEnumeratePhysicalDevices(
-            _instanceHandle,
+            _vulkanInstance.Handle,
             ref deviceCount,
             Marshal.UnsafeAddrOfPinnedArrayElement(devices, 0)
         );
 
-        // Rate them and pick the best
         return devices
             .Select(d => (device: d, score: RateDeviceSuitability(d)))
             .Where(d => d.score > 0)
@@ -47,24 +55,25 @@ public sealed class VulkanPhysicalDeviceSelector {
 
     private int RateDeviceSuitability(IntPtr device) {
         VulkanLow.vkGetPhysicalDeviceProperties(device, out var properties);
+        
         var name = GetDeviceName(ref properties);
-        Console.WriteLine($"Checking GPU: {name}");
+        _logger.LogInformation("checking {name}", name);
 
         if (!CheckQueueFamilies(device)) {
             return 0;
         }
 
-        int score = (properties.deviceType == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-            ? 1000
-            : 0;
+        var score = properties.deviceType == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0;
         score += (int)properties.limits.maxImageDimension2D;
 
-        Console.WriteLine($"GPU '{name}' suitability score: {score}");
+        _logger.LogInformation("{name} has suitability score of {score}", name, score);
+
         return score;
     }
 
     private bool CheckQueueFamilies(IntPtr device) {
         uint queueFamilyCount = 0;
+
         VulkanLow.vkGetPhysicalDeviceQueueFamilyProperties(device, ref queueFamilyCount, NULL);
         if (queueFamilyCount == 0) return false;
 
@@ -82,7 +91,7 @@ public sealed class VulkanPhysicalDeviceSelector {
                 hasGraphicsQueue = true;
             }
 
-            VulkanLow.vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surface, out var presentSupport);
+            VulkanLow.vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surfaceManager.Surface, out var presentSupport);
             if (presentSupport == TRUE) {
                 hasPresentationQueue = true;
             }
@@ -91,6 +100,7 @@ public sealed class VulkanPhysicalDeviceSelector {
                 return true;
             }
         }
+
         return false;
     }
 
