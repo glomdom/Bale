@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Bale.Bindings\Bale.Bindings.csproj" />
+      <ProjectReference Include="..\Bale.Bindings.Vulkan\Bale.Bindings.Vulkan.csproj" />
     </ItemGroup>
 
 </Project>

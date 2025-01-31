@@ -7,12 +7,13 @@ using static Bale.Bindings.Common;
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanInstance : IDisposable {
-    public IntPtr Handle;
+    public IntPtr Handle => _handle;
+    private IntPtr _handle;
 
     public VulkanInstance(string appName, Version version) {
         var extensions = GetGlfwRequiredExtensions();
         using var pAppName = new MarshaledString(appName);
-        
+
         var appInfo = new VkApplicationInfo {
             sType = VkStructureType.VK_STRUCTURE_TYPE_APPLICATION_INFO,
             pApplicationName = pAppName,
@@ -30,8 +31,7 @@ public sealed class VulkanInstance : IDisposable {
             ppEnabledExtensionNames = pExtensions
         };
 
-        var result = VulkanLow.vkCreateInstance(ref createInfo, NULL, out Handle);
-
+        var result = VulkanLow.vkCreateInstance(ref createInfo, NULL, out _handle);
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to create Vulkan instance: {result}");
         }
@@ -53,9 +53,9 @@ public sealed class VulkanInstance : IDisposable {
     }
 
     public void Dispose() {
-        if (Handle == NULL) return;
+        if (_handle == NULL) return;
 
-        VulkanLow.vkDestroyInstance(Handle, NULL);
-        Handle = NULL; 
+        VulkanLow.vkDestroyInstance(_handle, NULL);
+        _handle = NULL;
     }
 }

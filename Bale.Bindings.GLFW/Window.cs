@@ -3,10 +3,10 @@ using static Bale.Bindings.Native.GLFWLow;
 
 namespace Bale.Bindings.Vulkan;
 
-public sealed class GLFWWindow : IDisposable {
+public sealed class Window : IDisposable {
     private IntPtr _window;
 
-    public GLFWWindow(int width, int height, string title) {
+    public Window(int width, int height, string title) {
         if (!glfwInit()) {
             throw new Exception("Failed to initialize GLFW");
         }

@@ -1,13 +1,13 @@
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanApp : IDisposable {
-    private readonly GLFWWindow _window;
+    private readonly Window _window;
     private readonly VulkanInstance _vulkanInstance;
     private readonly VulkanSurfaceManager _vulkanSurfaceManager;
     private readonly VulkanLogicalDeviceManager _vulkanLogicalDeviceManager;
 
     public VulkanApp(string appName, int width, int height) {
-        _window = new GLFWWindow(width, height, appName);
+        _window = new Window(width, height, appName);
         _vulkanInstance = new VulkanInstance(appName, new Version(0, 0, 1));
         _vulkanSurfaceManager = new VulkanSurfaceManager(_vulkanInstance.Handle, _window);
 

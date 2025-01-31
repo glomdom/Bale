@@ -9,7 +9,7 @@ public sealed class VulkanSurfaceManager : IDisposable {
     private readonly IntPtr _instanceHandle;
     private readonly IntPtr _surface;
 
-    public VulkanSurfaceManager(IntPtr instanceHandle, GLFWWindow window) {
+    public VulkanSurfaceManager(IntPtr instanceHandle, Window window) {
         _instanceHandle = instanceHandle;
         
         var result = glfwCreateWindowSurface(_instanceHandle, window.Handle, NULL, out _surface);

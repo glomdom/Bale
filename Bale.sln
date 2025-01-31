@@ -1,8 +1,14 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Bindings", "Bale.Bindings\Bale.Bindings.csproj", "{9B9CA0A1-D099-44BE-B271-25B09D018D25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Bindings.Low", "Bale.Bindings.Low\Bale.Bindings.Low.csproj", "{9B9CA0A1-D099-44BE-B271-25B09D018D25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale", "Bale\Bale.csproj", "{8E22344B-AD61-49CF-86FF-636D09906CED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bindings", "Bindings", "{9DA9B61C-BE9C-4B5F-AFE6-1E58ED6B0F1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Bindings.GLFW", "Bale.Bindings.GLFW\Bale.Bindings.GLFW.csproj", "{459756A9-6EC6-4AC8-88DE-8630B23140F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Bindings.Vulkan", "Bale.Bindings.Vulkan\Bale.Bindings.Vulkan.csproj", "{9C428055-AE38-403F-93F2-971BD84154EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,7 +24,18 @@ Global
 		{8E22344B-AD61-49CF-86FF-636D09906CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E22344B-AD61-49CF-86FF-636D09906CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E22344B-AD61-49CF-86FF-636D09906CED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459756A9-6EC6-4AC8-88DE-8630B23140F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459756A9-6EC6-4AC8-88DE-8630B23140F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459756A9-6EC6-4AC8-88DE-8630B23140F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459756A9-6EC6-4AC8-88DE-8630B23140F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C428055-AE38-403F-93F2-971BD84154EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C428055-AE38-403F-93F2-971BD84154EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C428055-AE38-403F-93F2-971BD84154EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C428055-AE38-403F-93F2-971BD84154EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{459756A9-6EC6-4AC8-88DE-8630B23140F5} = {9DA9B61C-BE9C-4B5F-AFE6-1E58ED6B0F1A}
+		{9C428055-AE38-403F-93F2-971BD84154EA} = {9DA9B61C-BE9C-4B5F-AFE6-1E58ED6B0F1A}
+		{9B9CA0A1-D099-44BE-B271-25B09D018D25} = {9DA9B61C-BE9C-4B5F-AFE6-1E58ED6B0F1A}
 	EndGlobalSection
 EndGlobal
