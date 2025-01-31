@@ -14,9 +14,9 @@ public sealed class MarshaledStruct<T> : IDisposable where T : struct {
     public static implicit operator IntPtr(MarshaledStruct<T> ms) => ms._ptr;
 
     public void Dispose() {
-        if (_ptr != NULL) {
-            Marshal.FreeHGlobal(_ptr);
-            _ptr = NULL;
-        }
+        if (_ptr == NULL) return;
+
+        Marshal.FreeHGlobal(_ptr);
+        _ptr = NULL;
     }
 }

@@ -13,9 +13,9 @@ public sealed class MarshaledString : IDisposable {
     public static implicit operator IntPtr(MarshaledString ms) => ms._ptr;
     
     public void Dispose() {
-        if (_ptr != NULL) {
-            Marshal.FreeHGlobal(_ptr);
-            _ptr = NULL;
-        }
+        if (_ptr == NULL) return;
+
+        Marshal.FreeHGlobal(_ptr);
+        _ptr = NULL;
     }
 }

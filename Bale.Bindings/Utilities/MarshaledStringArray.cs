@@ -24,9 +24,9 @@ public sealed class MarshaledStringArray : IDisposable {
             Marshal.FreeHGlobal(ptr);
         }
 
-        if (_ptrArray != NULL) {
-            Marshal.FreeHGlobal(_ptrArray);
-            _ptrArray = NULL;
-        }
+        if (_ptrArray == NULL) return;
+
+        Marshal.FreeHGlobal(_ptrArray);
+        _ptrArray = NULL;
     }
 }
