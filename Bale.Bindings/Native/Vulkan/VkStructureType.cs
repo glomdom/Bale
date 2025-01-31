@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Native.Vulkan;
 
 public enum VkStructureType {
     VK_STRUCTURE_TYPE_APPLICATION_INFO = 0,

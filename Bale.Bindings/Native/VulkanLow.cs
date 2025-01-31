@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Bale.Bindings.Native.Vulkan;
 
 namespace Bale.Bindings.Native;
@@ -49,5 +49,35 @@ public static partial class VulkanLow {
         IntPtr instance,
         IntPtr surface,
         IntPtr allocator
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkGetPhysicalDeviceSurfaceSupportKHR(
+        IntPtr device,
+        uint queueFamilyIndex,
+        IntPtr surface,
+        out uint pSupported
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateDevice(
+        IntPtr physicalDevice,
+        ref VkDeviceCreateInfo pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pDevice
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroyDevice(
+        IntPtr device,
+        IntPtr pAllocator
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkGetDeviceQueue(
+        IntPtr device,
+        uint queueFamilyIndex,
+        uint queueIndex,
+        out IntPtr pQueue
     );
 }

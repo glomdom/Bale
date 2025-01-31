@@ -1,4 +1,4 @@
-﻿using Bale.Bindings.Vulkan;
+using Bale.Bindings.Vulkan;
 
 try {
     using var app = new VulkanApp("Bale", 600, 400);

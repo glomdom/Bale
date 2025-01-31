@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Utilities;

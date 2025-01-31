@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Bale.Bindings.Native.Vulkan;
 
 namespace Bale.Bindings.Native;
@@ -10,35 +10,38 @@ public static partial class GLFWLow {
 
     [LibraryImport("glfw3")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static partial bool glfwInit();
+    internal static partial bool glfwInit();
 
     [LibraryImport("glfw3")]
-    public static partial void glfwTerminate();
+    internal static partial void glfwTerminate();
 
     [LibraryImport("glfw3")]
-    public static partial IntPtr glfwCreateWindow(int width, int height, [MarshalAs(UnmanagedType.LPStr)] string title, IntPtr monitor, IntPtr share);
+    internal static partial IntPtr glfwCreateWindow(int width, int height, [MarshalAs(UnmanagedType.LPStr)] string title, IntPtr monitor, IntPtr share);
 
     [LibraryImport("glfw3")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static partial bool glfwWindowShouldClose(IntPtr window);
+    internal static partial bool glfwWindowShouldClose(IntPtr window);
 
     [LibraryImport("glfw3")]
-    public static partial void glfwPollEvents();
+    internal static partial void glfwPollEvents();
 
     [LibraryImport("glfw3")]
-    public static partial void glfwWindowHint(int hint, int value);
+    internal static partial void glfwWindowHint(int hint, int value);
     
     [LibraryImport("glfw3")]
-    public static partial void glfwMakeContextCurrent(IntPtr window);
+    internal static partial void glfwMakeContextCurrent(IntPtr window);
 
     [LibraryImport("glfw3")]
-    public static partial void glfwSwapBuffers(IntPtr window);
+    internal static partial void glfwSwapBuffers(IntPtr window);
 
     [LibraryImport("glfw3")]
-    public static partial VkResult glfwCreateWindowSurface(IntPtr instance, IntPtr window, IntPtr allocator, out IntPtr surface);
+    internal static partial VkResult glfwCreateWindowSurface(IntPtr instance, IntPtr window, IntPtr allocator, out IntPtr surface);
 
     [LibraryImport("glfw3")]
-    public static partial IntPtr glfwGetRequiredInstanceExtensions(out uint count);
+    internal static partial IntPtr glfwGetRequiredInstanceExtensions(out uint count);
+
+    [LibraryImport("glfw3")]
+    internal static partial void glfwDestroyWindow(IntPtr window);
 
     #region CONSTANTS
 

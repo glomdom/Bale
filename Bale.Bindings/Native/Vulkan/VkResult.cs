@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Native.Vulkan;
 
 public enum VkResult {
     VK_SUCCESS = 0,

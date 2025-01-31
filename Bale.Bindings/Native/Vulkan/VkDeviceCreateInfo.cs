@@ -3,13 +3,20 @@ using System.Runtime.InteropServices;
 namespace Bale.Bindings.Native.Vulkan;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct VkInstanceCreateInfo {
+public struct VkDeviceCreateInfo {
     public VkStructureType sType;
     public IntPtr pNext;
-    public uint flags;
-    public IntPtr pApplicationInfo;
+    public VkDeviceCreateFlags flags;
+    public uint queueCreateInfoCount;
+    public IntPtr pQueueCreateInfos;
+    
+    [Obsolete("Deprecated and should not be used.")]
     public uint enabledLayerCount;
+
+    [Obsolete("Deprecated and should not be used.")]
     public IntPtr ppEnabledLayerNames;
+
     public uint enabledExtensionCount;
     public IntPtr ppEnabledExtensionNames;
+    public IntPtr pEnabledFeatures;
 }

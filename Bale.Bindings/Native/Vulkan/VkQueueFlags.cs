@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Native.Vulkan;
 
 [Flags]
 public enum VkQueueFlags : uint {
