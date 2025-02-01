@@ -100,8 +100,7 @@ public sealed class VulkanSwapChainManager : IDisposable {
 
     private VkSurfaceFormatKHR ChooseSurfaceFormat(VkSurfaceFormatKHR[] formats) {
         var preferredFormat = formats.FirstOrDefault(f =>
-            f.format == VkFormat.VK_FORMAT_B8G8R8A8_SRGB &&
-            f.colorSpace == VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+            f is { format: VkFormat.VK_FORMAT_B8G8R8A8_SRGB, colorSpace: VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR }
         );
 
         return preferredFormat.format != 0 ? preferredFormat : formats[0];
