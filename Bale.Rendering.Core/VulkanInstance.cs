@@ -15,7 +15,8 @@ public sealed class VulkanInstance : IDisposable {
 
     public VulkanInstance(string appName, Version version, ILogger<VulkanInstance> logger) {
         _logger = logger;
-        
+
+        string[] validationLayers = ["VK_LAYER_KHRONOS_validation"];
         var extensions = GetGlfwRequiredExtensions();
         using var pAppName = new MarshaledString(appName);
 
@@ -28,12 +29,30 @@ public sealed class VulkanInstance : IDisposable {
 
         using var pAppInfo = new MarshaledStruct<VkApplicationInfo>(appInfo);
         using var pExtensions = new MarshaledStringArray(extensions);
+        
+        #if DEBUG
+        var allExtensions = extensions.ToList();
+        if (!allExtensions.Contains("VK_EXT_debug_utils")) {
+            allExtensions.Add("VK_EXT_debug_utils");
+        }
+
+        using var pAllExtensions = new MarshaledStringArray(allExtensions.ToArray());
+        #else
+        using var pAllExtensions = pExtensions;
+        #endif
 
         var createInfo = new VkInstanceCreateInfo {
             sType = VkStructureType.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
             pApplicationInfo = pAppInfo,
             enabledExtensionCount = (uint)extensions.Length,
-            ppEnabledExtensionNames = pExtensions
+            ppEnabledExtensionNames = pExtensions,
+            #if DEBUG
+            enabledLayerCount = (uint)validationLayers.Length,
+            ppEnabledLayerNames = new MarshaledStringArray(validationLayers),
+            #else
+            enabledLayerCount = 0,
+            ppEnabledLayerNames = IntPtr.Zero,
+            #endif
         };
 
         var result = VulkanLow.vkCreateInstance(ref createInfo, NULL, out _handle);
