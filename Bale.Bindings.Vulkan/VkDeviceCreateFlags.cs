@@ -1,4 +1,4 @@
-namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Vulkan;
 
 [Flags]
 public enum VkDeviceCreateFlags { }

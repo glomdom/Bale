@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+﻿namespace Bale.Bindings.Vulkan;
 
 public enum VkFormat {
     VK_FORMAT_UNDEFINED = 0,

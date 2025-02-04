@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+﻿namespace Bale.Bindings.Vulkan;
 
 public enum VkSharingMode {
     VK_SHARING_MODE_EXCLUSIVE = 0,

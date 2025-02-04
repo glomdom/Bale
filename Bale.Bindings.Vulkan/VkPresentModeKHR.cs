@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+﻿namespace Bale.Bindings.Vulkan;
 
 public enum VkPresentModeKHR {
     VK_PRESENT_MODE_IMMEDIATE_KHR = 0,

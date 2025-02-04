@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Vulkan;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct VkSurfaceFormatKHR {

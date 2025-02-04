@@ -1,5 +1,5 @@
-﻿using Bale.Bindings.Native.Vulkan;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+
 using static Bale.Bindings.Native.VulkanLow;
 using static Bale.Bindings.Native.GLFWLow;
 using static Bale.Bindings.Common;

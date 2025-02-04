@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 using Bale.Bindings.Native;
-using Bale.Bindings.Native.Vulkan;
 using Microsoft.Extensions.Logging;
 using static Bale.Bindings.Common;
 

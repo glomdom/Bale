@@ -1,4 +1,4 @@
-namespace Bale.Bindings.Native.Vulkan;
+namespace Bale.Bindings.Vulkan;
 
 public enum VkPhysicalDeviceType {
     VK_PHYSICAL_DEVICE_TYPE_OTHER = 0,

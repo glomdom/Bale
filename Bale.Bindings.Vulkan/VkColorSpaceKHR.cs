@@ -1,4 +1,4 @@
-﻿namespace Bale.Bindings.Native.Vulkan;
+﻿namespace Bale.Bindings.Vulkan;
 
 public enum VkColorSpaceKHR {
     VK_COLOR_SPACE_SRGB_NONLINEAR_KHR = 0,
