@@ -1,7 +1,8 @@
-.idea/
+/scripts/
+/.idea/
+/.vs/
+
 bin/
 obj/
 
 *.UserSettings*
-/scripts
-scripts/strip_struct.py
