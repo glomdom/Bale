@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Bale.Bindings.Native.Vulkan;
+using Bale.Bindings.Vulkan;
 
 namespace Bale.Bindings.Native;
 

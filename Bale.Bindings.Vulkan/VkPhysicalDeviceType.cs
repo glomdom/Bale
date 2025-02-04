@@ -1,6 +1,6 @@
 namespace Bale.Bindings.Vulkan;
 
-public enum VkPhysicalDeviceType {
+public enum VkPhysicalDeviceType : uint {
     VK_PHYSICAL_DEVICE_TYPE_OTHER = 0,
     VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU = 1,
     VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU = 2,

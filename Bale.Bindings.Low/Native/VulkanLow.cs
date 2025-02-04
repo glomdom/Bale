@@ -147,4 +147,6 @@ public static partial class VulkanLow {
         IntPtr renderPass,
         IntPtr pAllocator
     );
+    
+    public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }

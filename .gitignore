@@ -4,3 +4,4 @@ obj/
 
 *.UserSettings*
 /scripts
+scripts/strip_struct.py
