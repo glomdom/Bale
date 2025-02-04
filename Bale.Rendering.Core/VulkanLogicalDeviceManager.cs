@@ -114,6 +114,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
     public void Dispose() {
         if (_device == NULL) return;
 
+        VulkanLow.vkDeviceWaitIdle(_device);
         VulkanLow.vkDestroyDevice(_device, NULL);
         _device = NULL;
     }

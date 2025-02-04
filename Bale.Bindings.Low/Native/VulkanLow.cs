@@ -122,4 +122,14 @@ public static partial class VulkanLow {
         ref uint pSwapchainImageCount,
         IntPtr pSwapchainImages
     );
+    
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroySwapchainKHR(
+        IntPtr device,
+        IntPtr swapchain,
+        IntPtr pAllocator
+    );
+    
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkDeviceWaitIdle(IntPtr device);
 }

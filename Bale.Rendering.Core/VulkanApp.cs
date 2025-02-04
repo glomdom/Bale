@@ -7,7 +7,7 @@ public sealed class VulkanApp : IDisposable {
     private readonly VulkanInstance _vulkanInstance;
     private readonly VulkanSurfaceManager _vulkanSurfaceManager;
     private readonly VulkanLogicalDeviceManager _vulkanLogicalDeviceManager;
-    private readonly VulkanSwapChainManager _vulkanSwapChainManager;
+    private readonly VulkanSwapchainManager _vulkanSwapchainManager;
     private readonly ILogger<VulkanApp> _logger;
 
     public VulkanApp(
@@ -15,7 +15,7 @@ public sealed class VulkanApp : IDisposable {
         VulkanInstance vulkanInstance,
         VulkanSurfaceManager vulkanSurfaceManager,
         VulkanLogicalDeviceManager vulkanLogicalDeviceManager,
-        VulkanSwapChainManager vulkanSwapChainManager,
+        VulkanSwapchainManager vulkanSwapchainManager,
         ILogger<VulkanApp> logger
     ) {
         _logger = logger;
@@ -23,7 +23,7 @@ public sealed class VulkanApp : IDisposable {
         _vulkanInstance = vulkanInstance;
         _vulkanSurfaceManager = vulkanSurfaceManager;
         _vulkanLogicalDeviceManager = vulkanLogicalDeviceManager;
-        _vulkanSwapChainManager = vulkanSwapChainManager;
+        _vulkanSwapchainManager = vulkanSwapchainManager;
     }
 
     public void Run() {
@@ -33,7 +33,7 @@ public sealed class VulkanApp : IDisposable {
     }
 
     public void Dispose() {
-        _vulkanSwapChainManager.Dispose();
+        _vulkanSwapchainManager.Dispose();
         _vulkanLogicalDeviceManager.Dispose();
         _vulkanSurfaceManager.Dispose();
         _vulkanInstance.Dispose();

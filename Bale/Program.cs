@@ -28,7 +28,7 @@ var host = Host.CreateDefaultBuilder()
         services.AddSingleton<VulkanSurfaceManager>();
         services.AddSingleton<VulkanPhysicalDeviceSelector>();
         services.AddSingleton<VulkanLogicalDeviceManager>();
-        services.AddSingleton<VulkanSwapChainManager>();
+        services.AddSingleton<VulkanSwapchainManager>();
         
         services.AddSingleton<VulkanApp>();
     })
