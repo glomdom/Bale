@@ -4,8 +4,12 @@ using static Bale.Bindings.Common;
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanCommandBuffer : IDisposable {
-    public IntPtr Handle { get; private set; }
+    public IntPtr Handle {
+        get => _handle;
+        private set => _handle = value;
+    }
 
+    private IntPtr _handle;
     private readonly IntPtr _device;
     private readonly IntPtr _commandPool;
 
@@ -24,7 +28,7 @@ public sealed class VulkanCommandBuffer : IDisposable {
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to allocate command buffer: {result}");
         }
-        
+
         Handle = commandBuffer;
     }
 
@@ -40,11 +44,11 @@ public sealed class VulkanCommandBuffer : IDisposable {
     public void End() {
         VulkanLow.vkEndCommandBuffer(Handle);
     }
-    
+
     public void Dispose() {
         if (Handle == NULL) return;
-        
-        VulkanLow.vkFreeCommandBuffers(_device, _commandPool, 1, Handle);
+
+        VulkanLow.vkFreeCommandBuffers(_device, _commandPool, 1, ref _handle);
         Handle = NULL;
     }
 }

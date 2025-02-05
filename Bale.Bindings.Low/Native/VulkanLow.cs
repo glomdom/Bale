@@ -181,7 +181,7 @@ public static partial class VulkanLow {
         IntPtr device,
         IntPtr commandPool,
         uint commandBufferCount,
-        IntPtr commandBuffers
+        ref IntPtr commandBuffers
     );
 
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
