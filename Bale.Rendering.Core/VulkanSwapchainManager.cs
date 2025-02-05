@@ -75,7 +75,7 @@ public sealed class VulkanSwapchainManager : IDisposable {
 
         var result = VulkanLow.vkCreateSwapchainKHR(_deviceManager.Device, ref swapChainCreateInfo, NULL, out _swapchain);
         if (result != VkResult.VK_SUCCESS) {
-            throw new Exception($"Failed to create swap chain: {result}");
+            throw new Exception($"Failed to create swapchain: {result}");
         }
 
         Log.Information("created Vulkan swapchain successfully");

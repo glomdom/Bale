@@ -194,5 +194,13 @@ public static partial class VulkanLow {
     [LibraryImport("vulkan-1")]
     internal static partial void vkCmdEndRenderPass(IntPtr commandBuffer);
 
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateCommandPool(
+        IntPtr device,
+        ref VkCommandPoolCreateInfo pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pCommandPool
+    );
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }

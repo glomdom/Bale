@@ -40,8 +40,7 @@ public sealed class VulkanRenderPass : IDisposable {
             srcStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             dstStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             srcAccessMask = 0,
-            dstAccessMask = VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            dependencyFlags = 0,
+            dstAccessMask = VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
         };
 
         var renderPassInfo = new VkRenderPassCreateInfo {
@@ -65,7 +64,7 @@ public sealed class VulkanRenderPass : IDisposable {
     public void Dispose() {
         if (Handle == NULL) return;
         
-        VulkanLow.vkDestroyRenderPass(Handle, _device, NULL);
+        VulkanLow.vkDestroyRenderPass(_device, Handle, NULL);
         Handle = NULL;
     }
 }

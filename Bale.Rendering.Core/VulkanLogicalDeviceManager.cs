@@ -11,10 +11,13 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
     private readonly VulkanPhysicalDeviceSelector _physicalDeviceSelector;
     private readonly VulkanSurfaceManager _surfaceManager;
     private IntPtr _device;
+    private IntPtr _commandPool;
     private IntPtr _graphicsQueue;
     private IntPtr _presentQueue;
+    private uint _graphicsFamily;
 
     public IntPtr Device => _device;
+    public IntPtr CommandPool => _commandPool;
     public IntPtr GraphicsQueue => _graphicsQueue;
     public IntPtr PresentQueue => _presentQueue;
 
@@ -26,6 +29,22 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
         _surfaceManager = surfaceManager;
 
         CreateDeviceAndQueues(_physicalDeviceSelector.PhysicalDevice, _surfaceManager.Surface);
+        CreateCommandPool(_physicalDeviceSelector.PhysicalDevice);
+    }
+
+    private void CreateCommandPool(IntPtr physicalDevice) {
+        var poolInfo = new VkCommandPoolCreateInfo {
+            sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+            flags = VkCommandPoolCreateFlags.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+            queueFamilyIndex = _graphicsFamily,
+        };
+
+        var result = VulkanLow.vkCreateCommandPool(_device, ref poolInfo, NULL, out _commandPool);
+        if (result != VkResult.VK_SUCCESS) {
+            throw new Exception($"Failed to create command pool: {result}");
+        }
+        
+        Log.Information("created command pool");
     }
 
     private void CreateDeviceAndQueues(IntPtr physicalDevice, IntPtr surface) {
@@ -104,6 +123,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
 
         VulkanLow.vkGetDeviceQueue(_device, (uint)graphicsFamily, 0, out _graphicsQueue);
         VulkanLow.vkGetDeviceQueue(_device, (uint)presentFamily, 0, out _presentQueue);
+        _graphicsFamily = (uint)graphicsFamily;
 
         Log.Information("logical device created");
     }
