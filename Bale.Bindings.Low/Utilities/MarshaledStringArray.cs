@@ -1,32 +1,56 @@
 using System.Runtime.InteropServices;
+using System.Text;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Utilities;
 
 public sealed class MarshaledStringArray : IDisposable {
-    private IntPtr _ptrArray;
-    private readonly IntPtr[] _stringPtrs;
+    private readonly SafeHGlobalHandle?[] _stringHandles;
+    private SafeHGlobalHandle? _ptrArray;
 
-    public MarshaledStringArray(string[] strings) {
-        _stringPtrs = new IntPtr[strings.Length];
-        _ptrArray = Marshal.AllocHGlobal(strings.Length * IntPtr.Size);
+    public MarshaledStringArray(string?[] strings) {
+        ArgumentNullException.ThrowIfNull(strings);
 
-        for (var i = 0; i < strings.Length; i++) {
-            _stringPtrs[i] = Marshal.StringToHGlobalAnsi(strings[i]);
-            Marshal.WriteIntPtr(_ptrArray, i * IntPtr.Size, _stringPtrs[i]);
+        var count = strings.Length;
+        _stringHandles = new SafeHGlobalHandle?[count];
+        _ptrArray = new SafeHGlobalHandle(count * IntPtr.Size);
+
+        unsafe {
+            var ptr = (IntPtr*)_ptrArray.DangerousGetHandle().ToPointer();
+            for (var i = 0; i < count; i++) {
+                var s = strings[i];
+
+                if (s is null) {
+                    _stringHandles[i] = null;
+                    ptr[i] = IntPtr.Zero;
+                } else {
+                    var bytes = Encoding.ASCII.GetBytes(s);
+                    var byteCount = bytes.Length + 1;
+                    _stringHandles[i] = new SafeHGlobalHandle(byteCount);
+                    
+                    var destination = new Span<byte>(_stringHandles[i]!.DangerousGetHandle().ToPointer(), byteCount);
+                    bytes.CopyTo(destination);
+                    destination[bytes.Length] = 0;
+                    ptr[i] = _stringHandles[i]!.DangerousGetHandle();
+                }
+            }
         }
     }
 
-    public static implicit operator IntPtr(MarshaledStringArray msa) => msa._ptrArray;
+    ~MarshaledStringArray() {
+        Dispose();
+    }
+
+    public static implicit operator IntPtr(MarshaledStringArray msa) => msa._ptrArray?.DangerousGetHandle() ?? IntPtr.Zero;
 
     public void Dispose() {
-        foreach (var ptr in _stringPtrs) {
-            Marshal.FreeHGlobal(ptr);
+        foreach (var handle in _stringHandles) {
+            handle?.Dispose();
         }
-
-        if (_ptrArray == NULL) return;
-
-        Marshal.FreeHGlobal(_ptrArray);
-        _ptrArray = NULL;
+        
+        _ptrArray?.Dispose();
+        _ptrArray = null;
+        
+        GC.SuppressFinalize(this);
     }
 }
