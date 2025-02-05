@@ -1,6 +1,4 @@
-using System.Runtime.InteropServices;
 using System.Text;
-using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Utilities;
 
@@ -24,7 +22,7 @@ public sealed class MarshaledStringArray : IDisposable {
                     _stringHandles[i] = null;
                     ptr[i] = IntPtr.Zero;
                 } else {
-                    var bytes = Encoding.ASCII.GetBytes(s);
+                    var bytes = Encoding.UTF8.GetBytes(s);
                     var byteCount = bytes.Length + 1;
                     _stringHandles[i] = new SafeHGlobalHandle(byteCount);
                     
