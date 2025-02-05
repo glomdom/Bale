@@ -63,6 +63,9 @@ public sealed class VulkanRenderPass : IDisposable {
     }
     
     public void Dispose() {
-        // TODO release managed resources here
+        if (Handle == NULL) return;
+        
+        VulkanLow.vkDestroyRenderPass(Handle, _device, NULL);
+        Handle = NULL;
     }
 }
