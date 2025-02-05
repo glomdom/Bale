@@ -12,7 +12,7 @@
       <ProjectReference Include="..\Bale.Bindings.GLFW\Bale.Bindings.GLFW.csproj" />
       <ProjectReference Include="..\Bale.Bindings.Low\Bale.Bindings.Low.csproj" />
       <ProjectReference Include="..\Bale.Bindings.Vulkan\Bale.Bindings.Vulkan.csproj" />
-      <ProjectReference Include="..\Bale.Interop.Utilities\Bale.Interop.Utilities.csproj" />
+      <ProjectReference Include="..\Bale.Interop\Bale.Interop.csproj" />
     </ItemGroup>
 
 </Project>

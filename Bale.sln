@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Rendering.Core", "Bale
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interop", "Interop", "{E1226BF6-6333-4AC8-875A-89393C492B98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Interop.Utilities", "Bale.Interop.Utilities\Bale.Interop.Utilities.csproj", "{862D06AA-6AD3-436E-90DF-B65E95F4DB71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bale.Interop", "Bale.Interop\Bale.Interop.csproj", "{862D06AA-6AD3-436E-90DF-B65E95F4DB71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

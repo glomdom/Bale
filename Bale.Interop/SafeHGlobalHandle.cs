@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace Bale.Interop.Utilities;
+namespace Bale.Interop;
 
 public sealed class SafeHGlobalHandle : SafeHandleZeroOrMinusOneIsInvalid {
     public SafeHGlobalHandle(int size) : base(true) {
