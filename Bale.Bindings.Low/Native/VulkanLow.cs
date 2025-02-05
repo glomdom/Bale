@@ -160,5 +160,29 @@ public static partial class VulkanLow {
         IntPtr pAllocator
     );
 
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkAllocateCommandBuffers(
+        IntPtr device,
+        ref VkCommandBufferAllocateInfo pAllocateInfo,
+        out IntPtr pCommandBuffers
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkBeginCommandBuffer(
+        IntPtr commandBuffer,
+        ref VkCommandBufferBeginInfo pBeginInfo
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkEndCommandBuffer(IntPtr commandBuffer);
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkFreeCommandBuffers(
+        IntPtr device,
+        IntPtr commandPool,
+        uint commandBufferCount,
+        IntPtr commandBuffers
+    );
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }
