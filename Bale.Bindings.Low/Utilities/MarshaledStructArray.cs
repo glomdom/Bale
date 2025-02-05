@@ -1,33 +1,42 @@
-using System.Runtime.InteropServices;
-using static Bale.Bindings.Common;
+using System.Runtime.CompilerServices;
 
 namespace Bale.Bindings.Utilities;
 
-public sealed class MarshaledStructArray<T> : IDisposable where T : struct {
-    private IntPtr _ptr;
-    private readonly int _elementSize;
-    private readonly int _length;
+public sealed class MarshaledStructArray<T> : IDisposable where T : unmanaged {
+    private readonly SafeHGlobalHandle _handle;
+    private bool _disposed;
 
     public MarshaledStructArray(T[] items) {
-        _length = items.Length;
-        _elementSize = Marshal.SizeOf<T>();
-        _ptr = Marshal.AllocHGlobal(_length * _elementSize);
+        ArgumentNullException.ThrowIfNull(items);
 
-        for (var i = 0; i < _length; i++) {
-            Marshal.StructureToPtr(items[i], _ptr + i * _elementSize, false);
+        var length = items.Length;
+        var elementSize = Unsafe.SizeOf<T>();
+        var totalBytes = checked(elementSize * length);
+        _handle = new SafeHGlobalHandle(totalBytes);
+
+        unsafe {
+            fixed (T* sourcePtr = items) {
+                Buffer.MemoryCopy(sourcePtr, (void*)_handle.DangerousGetHandle(), totalBytes, totalBytes);
+            }
         }
     }
 
-    public static implicit operator IntPtr(MarshaledStructArray<T> arr) => arr._ptr;
+    ~MarshaledStructArray() => Dispose(false);
+
+    public static implicit operator IntPtr(MarshaledStructArray<T> arr) => arr?._handle.DangerousGetHandle() ?? IntPtr.Zero;
 
     public void Dispose() {
-        if (_ptr == NULL) return;
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        for (var i = 0; i < _length; i++) {
-            Marshal.DestroyStructure<T>(_ptr + i * _elementSize);
+    private void Dispose(bool disposing) {
+        if (_disposed) return;
+
+        if (disposing) {
+            _handle.Dispose();
         }
-        
-        Marshal.FreeHGlobal(_ptr);
-        _ptr = NULL;
+
+        _disposed = true;
     }
 }
