@@ -27,6 +27,7 @@ public sealed class MarshaledStruct<T> : IDisposable where T : unmanaged {
 
     private void Dispose(bool disposing) {
         if (_handle is null || _handle.IsClosed) return;
+
         _handle.Dispose();
         _handle = null;
     }
