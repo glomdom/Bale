@@ -8,7 +8,7 @@ public sealed class MarshaledString : IDisposable {
     public MarshaledString(string str) {
         ArgumentNullException.ThrowIfNull(str);
 
-        var bytes = Encoding.ASCII.GetBytes(str);
+        var bytes = Encoding.UTF8.GetBytes(str);
         var byteCount = bytes.Length + 1; // +1 for \0
 
         _handle = new SafeHGlobalHandle(byteCount);
