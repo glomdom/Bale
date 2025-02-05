@@ -184,5 +184,15 @@ public static partial class VulkanLow {
         ref IntPtr commandBuffers
     );
 
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkCmdBeginRenderPass(
+        IntPtr commandBuffer,
+        ref VkRenderPassBeginInfo pBeginInfo,
+        VkSubpassContents contents
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkCmdEndRenderPass(IntPtr commandBuffer);
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }

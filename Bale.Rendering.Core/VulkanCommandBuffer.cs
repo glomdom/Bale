@@ -1,4 +1,5 @@
 ﻿using Bale.Bindings.Native;
+using Bale.Interop;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -30,6 +31,20 @@ public sealed class VulkanCommandBuffer : IDisposable {
         }
 
         Handle = commandBuffer;
+    }
+
+    public void RecordRenderPass(IntPtr renderPass, IntPtr framebuffer, VkExtent2D extent, VkClearValue clearColor) {
+        var renderPassInfo = new VkRenderPassBeginInfo {
+            sType = VkStructureType.VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO,
+            renderPass = renderPass,
+            framebuffer = framebuffer,
+            renderArea = new VkRect2D { offset = new VkOffset2D { x = 0, y = 0 }, extent = extent },
+            clearValueCount = 1,
+            pClearValues = new MarshaledStruct<VkClearValue>(clearColor)
+        };
+
+        VulkanLow.vkCmdBeginRenderPass(Handle, ref renderPassInfo, VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE);
+        VulkanLow.vkCmdEndRenderPass(Handle);
     }
 
     public void Begin() {
