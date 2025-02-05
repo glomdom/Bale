@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Bale.Bindings.Utilities;
+namespace Bale.Interop.Utilities;
 
 public sealed class MarshaledString : IDisposable {
     private SafeHGlobalHandle? _handle;

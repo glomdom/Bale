@@ -1,6 +1,5 @@
 ﻿using Bale.Bindings.Native;
-using Bale.Bindings.Utilities;
-
+using Bale.Interop.Utilities;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;

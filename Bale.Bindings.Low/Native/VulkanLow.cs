@@ -1,8 +1,5 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Bale.Bindings.Vulkan;
-
-[assembly: DisableRuntimeMarshalling]
 
 namespace Bale.Bindings.Native;
 

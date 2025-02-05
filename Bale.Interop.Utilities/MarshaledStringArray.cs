@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Bale.Bindings.Utilities;
+namespace Bale.Interop.Utilities;
 
 public sealed class MarshaledStringArray : IDisposable {
     private readonly SafeHGlobalHandle?[] _stringHandles;

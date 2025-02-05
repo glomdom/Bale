@@ -6,14 +6,13 @@ namespace Bale.Bindings;
 public static class NativeResolver {
     private static readonly Dictionary<string, Dictionary<OSPlatform, string>> LibraryMappings = new() {
         {
-            "glfw3", new() {
+            "glfw3", new Dictionary<OSPlatform, string> {
                 { OSPlatform.Windows, "glfw3.dll" },
                 { OSPlatform.Linux, "libglfw.so" },
                 { OSPlatform.OSX, "libglfw.dylib" }
             }
-        },
-        {
-            "vulkan-1", new() {
+        }, {
+            "vulkan-1", new Dictionary<OSPlatform, string> {
                 { OSPlatform.Windows, "vulkan-1.dll" },
                 // { OSPlatform.Linux, "libglfw.so" },
                 // { OSPlatform.OSX, "libglfw.dylib" }

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 using Bale.Bindings.Native;
-using Bale.Bindings.Utilities;
+using Bale.Interop.Utilities;
 using Microsoft.Extensions.Logging;
 using static Bale.Bindings.Common;
 

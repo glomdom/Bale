@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace Bale.Bindings.Utilities;
+namespace Bale.Interop.Utilities;
 
 public sealed class MarshaledStructArray<T> : IDisposable where T : unmanaged {
     private readonly SafeHGlobalHandle? _handle;
