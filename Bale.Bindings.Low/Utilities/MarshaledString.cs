@@ -22,7 +22,7 @@ public sealed class MarshaledString : IDisposable {
     ~MarshaledString() => Dispose(false);
 
     public static implicit operator IntPtr(MarshaledString ms) => ms._handle?.DangerousGetHandle() ?? IntPtr.Zero;
-    
+
     public void Dispose() {
         Dispose(true);
         GC.SuppressFinalize(this);
