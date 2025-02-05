@@ -144,6 +144,21 @@ public static partial class VulkanLow {
         IntPtr renderPass,
         IntPtr pAllocator
     );
-    
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateFramebuffer(
+        IntPtr device,
+        ref VkFramebufferCreateInfo pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pFramebuffer
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroyFramebuffer(
+        IntPtr device,
+        IntPtr framebuffer,
+        IntPtr pAllocator
+    );
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }
