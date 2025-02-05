@@ -1,7 +1,8 @@
 using System.Runtime.InteropServices;
-using Bale.Bindings.Native;
+using Serilog;
+
 using Bale.Interop;
-using Microsoft.Extensions.Logging;
+using Bale.Bindings.Native;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -10,12 +11,11 @@ public sealed class VulkanInstance : IDisposable {
     public IntPtr Handle => _handle;
     private IntPtr _handle;
 
-    private readonly ILogger<VulkanInstance> _logger;
-
-    public VulkanInstance(string appName, Version version, ILogger<VulkanInstance> logger) {
-        _logger = logger;
-
+    public VulkanInstance(string appName, Version version) {
+        #if DEBUG
         string[] validationLayers = ["VK_LAYER_KHRONOS_validation"];
+        #endif
+
         var extensions = GetGlfwRequiredExtensions();
         using var pAppName = new MarshaledString(appName);
 
@@ -59,7 +59,7 @@ public sealed class VulkanInstance : IDisposable {
             throw new Exception($"Failed to create Vulkan instance: {result}");
         }
         
-        _logger.LogInformation("created Vulkan instance");
+        Log.Information("created Vulkan instance");
     }
 
     private string[] GetGlfwRequiredExtensions() {

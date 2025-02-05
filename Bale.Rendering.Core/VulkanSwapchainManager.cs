@@ -1,6 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using Serilog;
+using System.Runtime.InteropServices;
+
 using Bale.Bindings.Native;
-using Microsoft.Extensions.Logging;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -9,7 +10,6 @@ public sealed class VulkanSwapchainManager : IDisposable {
     private readonly VulkanLogicalDeviceManager _deviceManager;
     private readonly VulkanPhysicalDeviceSelector _physicalDeviceSelector;
     private readonly VulkanSurfaceManager _surfaceManager;
-    private readonly ILogger<VulkanSwapchainManager> _logger;
     private IntPtr _swapchain;
     private VkSurfaceFormatKHR _surfaceFormat;
     private VkPresentModeKHR _presentMode;
@@ -21,22 +21,21 @@ public sealed class VulkanSwapchainManager : IDisposable {
     public VkSurfaceFormatKHR SurfaceFormat => _surfaceFormat;
     public IntPtr[] SwapchainImages => _swapchainImages;
 
-    public VulkanSwapchainManager(VulkanLogicalDeviceManager deviceManager,
+    public VulkanSwapchainManager(
+        VulkanLogicalDeviceManager deviceManager,
         VulkanPhysicalDeviceSelector physicalDeviceSelector,
-        VulkanSurfaceManager surfaceManager,
-        ILogger<VulkanSwapchainManager> logger
+        VulkanSurfaceManager surfaceManager
     ) {
         _deviceManager = deviceManager;
         _physicalDeviceSelector = physicalDeviceSelector;
         _surfaceManager = surfaceManager;
-        _logger = logger;
 
         CreateSwapChain();
     }
 
     public void Dispose() {
         if (_swapchain == NULL) return;
-        
+
         VulkanLow.vkDeviceWaitIdle(_deviceManager.Device);
         VulkanLow.vkDestroySwapchainKHR(_deviceManager.Device, _swapchain, NULL);
         _swapchain = NULL;
@@ -46,10 +45,10 @@ public sealed class VulkanSwapchainManager : IDisposable {
         var physicalDevice = _physicalDeviceSelector.PhysicalDevice;
         var surface = _surfaceManager.Surface;
 
-        _logger.LogInformation("querying swapchain support");
+        Log.Information("querying swapchain support");
 
         QuerySwapChainSupport(physicalDevice, surface, out var capabilities, out var formats, out var presentModes);
-        
+
         _surfaceFormat = ChooseSurfaceFormat(formats);
         _presentMode = ChoosePresentMode(presentModes);
         _swapExtent = ChooseSwapExtent(capabilities);
@@ -58,7 +57,7 @@ public sealed class VulkanSwapchainManager : IDisposable {
         if (capabilities.maxImageCount > 0 && imageCount > capabilities.maxImageCount) {
             imageCount = capabilities.maxImageCount;
         }
-        
+
         var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
             sType = VkStructureType.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
             surface = surface,
@@ -73,19 +72,19 @@ public sealed class VulkanSwapchainManager : IDisposable {
             presentMode = _presentMode,
             clipped = TRUE
         };
-        
+
         var result = VulkanLow.vkCreateSwapchainKHR(_deviceManager.Device, ref swapChainCreateInfo, NULL, out _swapchain);
         if (result != VkResult.VK_SUCCESS) {
             throw new Exception($"Failed to create swap chain: {result}");
         }
-        
-        _logger.LogInformation("created Vulkan swapchain successfully");
+
+        Log.Information("created Vulkan swapchain successfully");
 
         VulkanLow.vkGetSwapchainImagesKHR(_deviceManager.Device, _swapchain, ref imageCount, NULL);
         _swapchainImages = new IntPtr[imageCount];
         VulkanLow.vkGetSwapchainImagesKHR(_deviceManager.Device, _swapchain, ref imageCount, Marshal.UnsafeAddrOfPinnedArrayElement(_swapchainImages, 0));
-        
-        _logger.LogInformation("retrieved {imageCount} swapchain images", imageCount);
+
+        Log.Information("retrieved {imageCount} swapchain images", imageCount);
     }
 
     private void QuerySwapChainSupport(IntPtr physicalDevice, IntPtr surface, out VkSurfaceCapabilitiesKHR capabilities, out VkSurfaceFormatKHR[] formats,

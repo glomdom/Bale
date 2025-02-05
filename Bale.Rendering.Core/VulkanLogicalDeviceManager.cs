@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
+using Serilog;
+
 using Bale.Bindings.Native;
 using Bale.Interop;
-using Microsoft.Extensions.Logging;
-
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -10,7 +10,6 @@ namespace Bale.Bindings.Vulkan;
 public sealed class VulkanLogicalDeviceManager : IDisposable {
     private readonly VulkanPhysicalDeviceSelector _physicalDeviceSelector;
     private readonly VulkanSurfaceManager _surfaceManager;
-    private readonly ILogger<VulkanLogicalDeviceManager> _logger;
     private IntPtr _device;
     private IntPtr _graphicsQueue;
     private IntPtr _presentQueue;
@@ -21,18 +20,16 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
 
     public VulkanLogicalDeviceManager(
         VulkanPhysicalDeviceSelector physicalDeviceSelector,
-        VulkanSurfaceManager surfaceManager,
-        ILogger<VulkanLogicalDeviceManager> logger
+        VulkanSurfaceManager surfaceManager
     ) {
         _physicalDeviceSelector = physicalDeviceSelector;
         _surfaceManager = surfaceManager;
-        _logger = logger;
 
         CreateDeviceAndQueues(_physicalDeviceSelector.PhysicalDevice, _surfaceManager.Surface);
     }
 
     private void CreateDeviceAndQueues(IntPtr physicalDevice, IntPtr surface) {
-        _logger.LogInformation("selecting queue families");
+        Log.Information("selecting queue families");
 
         uint queueFamilyCount = 0;
         VulkanLow.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, ref queueFamilyCount, NULL);
@@ -64,7 +61,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
             throw new Exception("Failed to find required Vulkan queue families");
         }
 
-        _logger.LogInformation("graphics queue family: {GraphicsFamily}, present queue family: {PresentFamily}", graphicsFamily, presentFamily);
+        Log.Information("graphics queue family: {GraphicsFamily}, present queue family: {PresentFamily}", graphicsFamily, presentFamily);
 
         using var priority = new MarshaledValue<float>(1.0f);
         var queueCreateInfos = new List<VkDeviceQueueCreateInfo>();
@@ -108,7 +105,7 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
         VulkanLow.vkGetDeviceQueue(_device, (uint)graphicsFamily, 0, out _graphicsQueue);
         VulkanLow.vkGetDeviceQueue(_device, (uint)presentFamily, 0, out _presentQueue);
 
-        _logger.LogInformation("logical device created");
+        Log.Information("logical device created");
     }
 
     public void Dispose() {

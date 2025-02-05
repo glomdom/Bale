@@ -1,7 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+
 using Bale.Bindings.Native;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using static Bale.Bindings.Common;
 
 namespace Bale.Bindings.Vulkan;
@@ -11,23 +12,20 @@ public sealed class VulkanPhysicalDeviceSelector {
 
     private readonly VulkanInstance _vulkanInstance;
     private readonly VulkanSurfaceManager _surfaceManager;
-    private readonly ILogger<VulkanPhysicalDeviceSelector> _logger;
 
     public VulkanPhysicalDeviceSelector(
         VulkanInstance vulkanInstance,
-        VulkanSurfaceManager surfaceManager,
-        ILogger<VulkanPhysicalDeviceSelector> logger
+        VulkanSurfaceManager surfaceManager
     ) {
         _vulkanInstance = vulkanInstance;
         _surfaceManager = surfaceManager;
-        _logger = logger;
 
         PhysicalDevice = PickPhysicalDevice();
         if (PhysicalDevice == NULL) {
             throw new Exception("Failed to find Vulkan-compatible GPU");
         }
         
-        _logger.LogInformation("selected physical device");
+        Log.Information("selected physical device");
     }
 
     private IntPtr PickPhysicalDevice() {
@@ -56,7 +54,7 @@ public sealed class VulkanPhysicalDeviceSelector {
         VulkanLow.vkGetPhysicalDeviceProperties(device, out var properties);
         
         var name = GetDeviceName(ref properties);
-        _logger.LogInformation("checking {name}", name);
+        Log.Information("checking {gpu}", name);
 
         if (!CheckQueueFamilies(device)) {
             return 0;
@@ -65,7 +63,7 @@ public sealed class VulkanPhysicalDeviceSelector {
         var score = properties.deviceType == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0;
         score += (int)properties.limits.maxImageDimension2D;
 
-        _logger.LogInformation("{name} has suitability score of {score}", name, score);
+        Log.Information("{gpu} has suitability score of {score}", name, score);
 
         return score;
     }
