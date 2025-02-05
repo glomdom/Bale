@@ -37,20 +37,21 @@ public sealed class MarshaledStringArray : IDisposable {
         }
     }
 
-    ~MarshaledStringArray() {
-        Dispose();
-    }
+    ~MarshaledStringArray() => Dispose(false);
 
     public static implicit operator IntPtr(MarshaledStringArray msa) => msa._ptrArray?.DangerousGetHandle() ?? IntPtr.Zero;
 
     public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing) {
         foreach (var handle in _stringHandles) {
             handle?.Dispose();
         }
         
         _ptrArray?.Dispose();
         _ptrArray = null;
-        
-        GC.SuppressFinalize(this);
     }
 }

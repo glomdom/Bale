@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace Bale.Bindings.Utilities;
 
 public sealed class MarshaledStructArray<T> : IDisposable where T : unmanaged {
-    private readonly SafeHGlobalHandle _handle;
+    private readonly SafeHGlobalHandle? _handle;
     private bool _disposed;
 
     public MarshaledStructArray(T[] items) {
@@ -23,7 +23,7 @@ public sealed class MarshaledStructArray<T> : IDisposable where T : unmanaged {
 
     ~MarshaledStructArray() => Dispose(false);
 
-    public static implicit operator IntPtr(MarshaledStructArray<T> arr) => arr?._handle.DangerousGetHandle() ?? IntPtr.Zero;
+    public static implicit operator IntPtr(MarshaledStructArray<T> arr) => arr._handle?.DangerousGetHandle() ?? IntPtr.Zero;
 
     public void Dispose() {
         Dispose(true);
@@ -34,7 +34,7 @@ public sealed class MarshaledStructArray<T> : IDisposable where T : unmanaged {
         if (_disposed) return;
 
         if (disposing) {
-            _handle.Dispose();
+            _handle?.Dispose();
         }
 
         _disposed = true;

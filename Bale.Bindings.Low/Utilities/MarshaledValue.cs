@@ -1,24 +1,32 @@
-using System.Runtime.InteropServices;
-using static Bale.Bindings.Common;
+using System.Runtime.CompilerServices;
 
 namespace Bale.Bindings.Utilities;
 
 public sealed class MarshaledValue<T> : IDisposable where T : unmanaged {
-    private IntPtr _ptr;
+    private SafeHGlobalHandle? _handle;
 
     public MarshaledValue(T value) {
+        var size = Unsafe.SizeOf<T>();
+        _handle = new SafeHGlobalHandle(size);
+        
         unsafe {
-            _ptr = Marshal.AllocHGlobal(sizeof(T));
-            *(T*)_ptr = value;
+            *(T*)_handle.DangerousGetHandle().ToPointer() = value;
         }
     }
 
-    public static implicit operator IntPtr(MarshaledValue<T> mv) => mv._ptr;
-    
+    public static implicit operator IntPtr(MarshaledValue<T> mv) => mv._handle?.DangerousGetHandle() ?? IntPtr.Zero;
+
+    ~MarshaledValue() => Dispose(false);
+
     public void Dispose() {
-        if (_ptr == NULL) return;
-        
-        Marshal.FreeHGlobal(_ptr);
-        _ptr = NULL;
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing) {
+        if (_handle is null || _handle.IsClosed) return;
+
+        _handle.Dispose();
+        _handle = null;
     }
 }

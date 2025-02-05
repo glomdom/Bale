@@ -19,18 +19,19 @@ public sealed class MarshaledString : IDisposable {
         }
     }
 
-    ~MarshaledString() {
-        Dispose();
-    }
+    ~MarshaledString() => Dispose(false);
 
     public static implicit operator IntPtr(MarshaledString ms) => ms._handle?.DangerousGetHandle() ?? IntPtr.Zero;
     
     public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing) {
         if (_handle is null || _handle.IsClosed) return;
 
         _handle.Dispose();
         _handle = null;
-
-        GC.SuppressFinalize(this);
     }
 }
