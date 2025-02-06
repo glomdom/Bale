@@ -4,6 +4,7 @@ using Bale.Bindings.Vulkan;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
+    .MinimumLevel.Debug()
     .CreateLogger();
 
 try {
