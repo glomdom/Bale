@@ -35,7 +35,7 @@ public sealed class VulkanCommandBuffer : IDisposable {
 
     public void RecordRenderPass(IntPtr renderPass, IntPtr framebuffer, VkExtent2D extent, VkClearValue clearColor) {
         var renderPassInfo = new VkRenderPassBeginInfo {
-            sType = VkStructureType.VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO,
+            sType = VkStructureType.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
             renderPass = renderPass,
             framebuffer = framebuffer,
             renderArea = new VkRect2D { offset = new VkOffset2D { x = 0, y = 0 }, extent = extent },

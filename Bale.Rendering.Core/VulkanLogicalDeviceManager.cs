@@ -129,8 +129,12 @@ public sealed class VulkanLogicalDeviceManager : IDisposable {
     }
 
     public void Dispose() {
-        if (_device == NULL) return;
+        if (_commandPool != NULL) {
+            VulkanLow.vkDestroyCommandPool(_device, _commandPool, NULL);
+            _commandPool = NULL;
+        }
 
+        if (_device == NULL) return;
         VulkanLow.vkDeviceWaitIdle(_device);
         VulkanLow.vkDestroyDevice(_device, NULL);
         _device = NULL;

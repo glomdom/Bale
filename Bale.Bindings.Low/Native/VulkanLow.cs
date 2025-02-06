@@ -202,5 +202,38 @@ public static partial class VulkanLow {
         out IntPtr pCommandPool
     );
 
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateImageView(
+        IntPtr device,
+        ref VkImageViewCreateInfo pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pImageView
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroyCommandPool(
+        IntPtr device,
+        IntPtr pool,
+        IntPtr pAllocator
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroyImageView(
+        IntPtr device,
+        IntPtr imageView,
+        IntPtr pAllocator
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkQueueSubmit(
+        IntPtr queue,
+        uint submitCount,
+        ref VkSubmitInfo pSubmitInfo,
+        IntPtr pAllocator 
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkQueueWaitIdle(IntPtr queue);
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }

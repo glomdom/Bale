@@ -1,6 +1,5 @@
 ﻿using Serilog;
 using System.Runtime.InteropServices;
-
 using Bale.Bindings.Native;
 using static Bale.Bindings.Common;
 
@@ -15,11 +14,13 @@ public sealed class VulkanSwapchainManager : IDisposable {
     private VkPresentModeKHR _presentMode;
     private VkExtent2D _swapExtent;
     private IntPtr[] _swapchainImages = [];
+    private IntPtr[] _swapchainImageViews = [];
 
     public IntPtr Swapchain => _swapchain;
     public VkExtent2D SwapExtent => _swapExtent;
     public VkSurfaceFormatKHR SurfaceFormat => _surfaceFormat;
     public IntPtr[] SwapchainImages => _swapchainImages;
+    public IntPtr[] SwapchainImageViews => _swapchainImageViews;
 
     public VulkanSwapchainManager(
         VulkanLogicalDeviceManager deviceManager,
@@ -30,10 +31,21 @@ public sealed class VulkanSwapchainManager : IDisposable {
         _physicalDeviceSelector = physicalDeviceSelector;
         _surfaceManager = surfaceManager;
 
-        CreateSwapChain();
+        CreateSwapchain();
+        CreateSwapchainImageViews();
     }
 
     public void Dispose() {
+        if (_swapchainImageViews.Length > 0) {
+            foreach (var view in _swapchainImageViews) {
+                if (view != NULL) {
+                    VulkanLow.vkDestroyImageView(_deviceManager.Device, view, NULL);
+                }
+            }
+            
+            _swapchainImageViews = [];
+        }
+        
         if (_swapchain == NULL) return;
 
         VulkanLow.vkDeviceWaitIdle(_deviceManager.Device);
@@ -41,7 +53,45 @@ public sealed class VulkanSwapchainManager : IDisposable {
         _swapchain = NULL;
     }
 
-    private void CreateSwapChain() {
+    private void CreateSwapchainImageViews() {
+        if (_swapchainImages == null || _swapchainImages.Length == 0) {
+            throw new Exception("No swapchain images available for image view creation");
+        }
+
+        _swapchainImageViews = new IntPtr[_swapchainImages.Length];
+        for (var i = 0; i < _swapchainImageViews.Length; i++) {
+            var viewCreateInfo = new VkImageViewCreateInfo {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                pNext = NULL,
+                flags = 0,
+                image = _swapchainImages[i],
+                viewType = VkImageViewType.VK_IMAGE_VIEW_TYPE_2D,
+                format = _surfaceFormat.format,
+                components = new VkComponentMapping {
+                    r = VkComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+                    g = VkComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+                    b = VkComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+                    a = VkComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY
+                },
+                subresourceRange = new VkImageSubresourceRange {
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
+                    baseMipLevel = 0,
+                    levelCount = 1,
+                    baseArrayLayer = 0,
+                    layerCount = 1
+                }
+            };
+
+            var result = VulkanLow.vkCreateImageView(_deviceManager.Device, ref viewCreateInfo, NULL, out _swapchainImageViews[i]);
+            if (result != VkResult.VK_SUCCESS) {
+                throw new Exception($"Failed to create swapchain image view for image {i}: {result}");
+            }
+        }
+
+        Log.Information("created {count} swapchain image views", _swapchainImageViews.Length);
+    }
+
+    private void CreateSwapchain() {
         var physicalDevice = _physicalDeviceSelector.PhysicalDevice;
         var surface = _surfaceManager.Surface;
 
@@ -87,8 +137,13 @@ public sealed class VulkanSwapchainManager : IDisposable {
         Log.Information("retrieved {imageCount} swapchain images", imageCount);
     }
 
-    private void QuerySwapChainSupport(IntPtr physicalDevice, IntPtr surface, out VkSurfaceCapabilitiesKHR capabilities, out VkSurfaceFormatKHR[] formats,
-        out VkPresentModeKHR[] presentModes) {
+    private void QuerySwapChainSupport(
+        IntPtr physicalDevice,
+        IntPtr surface,
+        out VkSurfaceCapabilitiesKHR capabilities,
+        out VkSurfaceFormatKHR[] formats,
+        out VkPresentModeKHR[] presentModes
+    ) {
         VulkanLow.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, out capabilities);
 
         uint formatCount = 0;

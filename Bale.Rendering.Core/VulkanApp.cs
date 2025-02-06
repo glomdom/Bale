@@ -1,5 +1,9 @@
 using Serilog;
 
+using Bale.Bindings.Native;
+using Bale.Interop;
+using static Bale.Bindings.Common;
+
 namespace Bale.Bindings.Vulkan;
 
 public sealed class VulkanApp : IDisposable {
@@ -23,7 +27,7 @@ public sealed class VulkanApp : IDisposable {
         _vulkanSwapchainManager = new VulkanSwapchainManager(_vulkanLogicalDeviceManager, _physicalDeviceSelector, _vulkanSurfaceManager);
         _renderPass = new VulkanRenderPass(_vulkanLogicalDeviceManager.Device, _vulkanSwapchainManager.SurfaceFormat.format);
 
-        foreach (var imageView in _vulkanSwapchainManager.SwapchainImages) {
+        foreach (var imageView in _vulkanSwapchainManager.SwapchainImageViews) {
             _framebuffers.Add(new VulkanFramebuffer(_vulkanLogicalDeviceManager.Device, _renderPass.Handle, _vulkanSwapchainManager.SwapExtent, imageView));
         }
 
@@ -35,12 +39,16 @@ public sealed class VulkanApp : IDisposable {
     public void Run() {
         while (!_window.ShouldClose) {
             _window.PollEvents();
+            DrawFrame();
+
+            _currentFrame = (_currentFrame + 1) % _framebuffers.Count;
         }
     }
 
     public void Dispose() {
         foreach (var framebuffer in _framebuffers) framebuffer.Dispose();
-        
+        foreach (var commandBuffer in _commandBuffers) commandBuffer.Dispose();
+
         _renderPass.Dispose();
         _vulkanSwapchainManager.Dispose();
         _vulkanLogicalDeviceManager.Dispose();
@@ -49,5 +57,32 @@ public sealed class VulkanApp : IDisposable {
         _window.Dispose();
 
         Log.Information("disposed all managed resources");
+    }
+
+    private void DrawFrame() {
+        var commandBuffer = _commandBuffers[_currentFrame];
+        commandBuffer.Begin();
+
+        var clearValue = new VkClearValue();
+        unsafe {
+            clearValue.color.float32[0] = 0.0f;  // red
+            clearValue.color.float32[1] = 0.0f;  // green
+            clearValue.color.float32[2] = 0.0f;  // blue
+            clearValue.color.float32[3] = 1.0f;  // alpha
+        }
+        
+        commandBuffer.RecordRenderPass(_renderPass.Handle, _framebuffers[_currentFrame].Handle, _vulkanSwapchainManager.SwapExtent, clearValue);
+        commandBuffer.End();
+
+        var submitInfo = new VkSubmitInfo {
+            sType = VkStructureType.VK_STRUCTURE_TYPE_SUBMIT_INFO,
+            commandBufferCount = 1,
+            pCommandBuffers = new MarshaledStructArray<IntPtr>([commandBuffer.Handle])
+        };
+
+        VulkanLow.vkQueueSubmit(_vulkanLogicalDeviceManager.GraphicsQueue, 1, ref submitInfo, NULL);
+        VulkanLow.vkQueueWaitIdle(_vulkanLogicalDeviceManager.GraphicsQueue);
+        
+        Log.Information("Rendered");
     }
 }
