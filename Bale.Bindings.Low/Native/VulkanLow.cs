@@ -246,5 +246,22 @@ public static partial class VulkanLow {
         out IntPtr pSemaphore
     );
 
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkAcquireNextImageKHR(
+        IntPtr device,
+        IntPtr swapchain,
+        ulong timeout,
+        IntPtr semaphore,
+        IntPtr fence,
+        out uint pImageIndex
+    );
+
+    [LibraryImport("vulkan-1")]
+    internal static partial void vkDestroySemaphore(
+        IntPtr device,
+        IntPtr semaphore,
+        IntPtr pAllocator
+    );
+
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }
