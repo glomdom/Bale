@@ -1,6 +1,6 @@
 using Serilog;
 
-using Bale.Bindings.Vulkan;
+using Bale.Application;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

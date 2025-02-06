@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks> <!-- temporary until unsafe abstractions are made -->
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bale.Graphics.Vulkan\Bale.Graphics.Vulkan.csproj" />
+      <ProjectReference Include="..\Bale.Platform.GLFW\Bale.Platform.GLFW.csproj" />
+    </ItemGroup>
+
+</Project>
