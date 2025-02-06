@@ -19,7 +19,7 @@ modern game development using Vulkan.
 - [ ] Logging and debugging utilities
 - [ ] Configuration system
 - [ ] Hot-reload support for shaders and assets
-- [ ] UI framework for in-engine debugging (imlight?)
+- [ ] UI framework for in-engine debugging (imgui?)
 
 ## Contributing
 
