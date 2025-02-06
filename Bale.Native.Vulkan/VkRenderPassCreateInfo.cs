@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Bale.Native.Vulkan;
 
 namespace Bale.Native.Vulkan;
 
