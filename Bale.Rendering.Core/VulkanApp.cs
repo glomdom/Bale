@@ -65,9 +65,9 @@ public sealed class VulkanApp : IDisposable {
 
         var clearValue = new VkClearValue();
         unsafe {
-            clearValue.color.float32[0] = 0.0f;  // red
-            clearValue.color.float32[1] = 0.0f;  // green
-            clearValue.color.float32[2] = 0.0f;  // blue
+            clearValue.color.float32[0] = 0.3f;  // red
+            clearValue.color.float32[1] = 0.6f;  // green
+            clearValue.color.float32[2] = 0.9f;  // blue
             clearValue.color.float32[3] = 1.0f;  // alpha
         }
         
