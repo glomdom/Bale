@@ -19,6 +19,10 @@ public sealed class VulkanApp : IDisposable {
     private IntPtr _imageAvailableSemaphore;
     private IntPtr _renderFinishedSemaphore;
     private int _currentFrame;
+    
+    // TODO: remove this as its for render testing
+    private float _time;
+    private DateTime _lastFrameTime = DateTime.UtcNow;
 
     public VulkanApp() {
         _window = new Window(800, 600, "Bale");
@@ -126,15 +130,20 @@ public sealed class VulkanApp : IDisposable {
     }
 
     private void DrawFrame(uint imageIndex) {
+        var now = DateTime.UtcNow;
+        var dt = (float)(now - _lastFrameTime).TotalSeconds;
+        _lastFrameTime = now;
+        _time += dt * 0.5f;
+        
         var commandBuffer = _commandBuffers[_currentFrame];
         commandBuffer.Begin();
 
         var clearValue = new VkClearValue();
         unsafe {
-            clearValue.color.float32[0] = 1.0f; // red
-            clearValue.color.float32[1] = 1.0f; // green
-            clearValue.color.float32[2] = 0.0f; // blue
-            clearValue.color.float32[3] = 1.0f; // alpha
+            clearValue.color.float32[0] = (float)Math.Sin(_time * 2.0) * 0.5f + 0.5f;           // red
+            clearValue.color.float32[1] = (float)Math.Sin(_time * 2.0 + 2.0) * 0.5f + 0.5f;     // green
+            clearValue.color.float32[2] = (float)Math.Sin(_time * 2.0 + 4.0) * 0.5f + 0.5f;     // blue
+            clearValue.color.float32[3] = 1.0f;                                                 // alpha
         }
 
         commandBuffer.RecordRenderPass(_renderPass.Handle, _framebuffers[(int)imageIndex].Handle, _vulkanSwapchainManager.SwapExtent, clearValue);
