@@ -82,7 +82,17 @@ public sealed class VulkanApp : IDisposable {
 
         VulkanLow.vkQueueSubmit(_vulkanLogicalDeviceManager.GraphicsQueue, 1, ref submitInfo, NULL);
         VulkanLow.vkQueueWaitIdle(_vulkanLogicalDeviceManager.GraphicsQueue);
-        
-        Log.Information("Rendered");
+
+        var presentInfo = new VkPresentInfoKHR {
+            sType = VkStructureType.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+            swapchainCount = 1,
+            pSwapchains = new MarshaledStructArray<IntPtr>([_vulkanSwapchainManager.Swapchain]),
+            pImageIndices = new MarshaledValue<uint>((uint)_currentFrame)
+        };
+
+        var result = VulkanLow.vkQueuePresentKHR(_vulkanLogicalDeviceManager.PresentQueue, ref presentInfo);
+        if (result != VkResult.VK_SUCCESS) {
+            throw new Exception($"Failed to present swapchain image: {result}");
+        }
     }
 }

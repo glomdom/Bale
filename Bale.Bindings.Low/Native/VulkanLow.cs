@@ -234,6 +234,9 @@ public static partial class VulkanLow {
 
     [LibraryImport("vulkan-1")]
     internal static partial VkResult vkQueueWaitIdle(IntPtr queue);
+    
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkQueuePresentKHR(IntPtr queue, ref VkPresentInfoKHR presentInfo);
 
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }
