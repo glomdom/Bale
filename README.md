@@ -7,7 +7,7 @@ modern game development using Vulkan.
 
 ### Rendering
 
-- [ ] Implement proper frame synchronization (semaphores & fences)
+- [x] Implement proper frame synchronization (semaphores & fences)
 - [ ] Support for shaders (SPIR-V compilation and management)
 - [ ] Basic 3D rendering (vertex buffers, index buffers)
 - [ ] Texture support and sampling
