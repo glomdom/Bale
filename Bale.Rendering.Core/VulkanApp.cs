@@ -1,5 +1,4 @@
 using Serilog;
-
 using Bale.Bindings.Native;
 using Bale.Interop;
 using static Bale.Bindings.Common;
@@ -16,6 +15,9 @@ public sealed class VulkanApp : IDisposable {
     private readonly VulkanRenderPass _renderPass;
     private readonly List<VulkanFramebuffer> _framebuffers = [];
     private readonly List<VulkanCommandBuffer> _commandBuffers = [];
+
+    private IntPtr _imageAvailableSemaphore;
+    private IntPtr _renderFinishedSemaphore;
     private int _currentFrame = 0;
 
     public VulkanApp() {
@@ -34,6 +36,8 @@ public sealed class VulkanApp : IDisposable {
         for (var i = 0; i < _framebuffers.Count; i++) {
             _commandBuffers.Add(new VulkanCommandBuffer(_vulkanLogicalDeviceManager.Device, _vulkanLogicalDeviceManager.CommandPool));
         }
+        
+        CreateSyncObjects();
     }
 
     public void Run() {
@@ -59,18 +63,33 @@ public sealed class VulkanApp : IDisposable {
         Log.Information("disposed all managed resources");
     }
 
+    private void CreateSyncObjects() {
+        var semaphoreInfo = new VkSemaphoreCreateInfo {
+            sType = VkStructureType.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+        };
+
+        if (
+            VulkanLow.vkCreateSemaphore(_vulkanLogicalDeviceManager.Device, ref semaphoreInfo, NULL, out _imageAvailableSemaphore) != VkResult.VK_SUCCESS ||
+            VulkanLow.vkCreateSemaphore(_vulkanLogicalDeviceManager.Device, ref semaphoreInfo, NULL, out _renderFinishedSemaphore) != VkResult.VK_SUCCESS
+        ) {
+            throw new Exception("Failed to create synchronization objects for Vulkan rendering");
+        }
+        
+        Log.Debug("created imageview sync objects");
+    }
+
     private void DrawFrame() {
         var commandBuffer = _commandBuffers[_currentFrame];
         commandBuffer.Begin();
 
         var clearValue = new VkClearValue();
         unsafe {
-            clearValue.color.float32[0] = 0.3f;  // red
-            clearValue.color.float32[1] = 0.6f;  // green
-            clearValue.color.float32[2] = 0.9f;  // blue
-            clearValue.color.float32[3] = 1.0f;  // alpha
+            clearValue.color.float32[0] = 1.0f; // red
+            clearValue.color.float32[1] = 1.0f; // green
+            clearValue.color.float32[2] = 0.0f; // blue
+            clearValue.color.float32[3] = 1.0f; // alpha
         }
-        
+
         commandBuffer.RecordRenderPass(_renderPass.Handle, _framebuffers[_currentFrame].Handle, _vulkanSwapchainManager.SwapExtent, clearValue);
         commandBuffer.End();
 

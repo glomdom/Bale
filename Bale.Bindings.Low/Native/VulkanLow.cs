@@ -229,14 +229,22 @@ public static partial class VulkanLow {
         IntPtr queue,
         uint submitCount,
         ref VkSubmitInfo pSubmitInfo,
-        IntPtr pAllocator 
+        IntPtr pAllocator
     );
 
     [LibraryImport("vulkan-1")]
     internal static partial VkResult vkQueueWaitIdle(IntPtr queue);
-    
+
     [LibraryImport("vulkan-1")]
     internal static partial VkResult vkQueuePresentKHR(IntPtr queue, ref VkPresentInfoKHR presentInfo);
+
+    [LibraryImport("vulkan-1")]
+    internal static partial VkResult vkCreateSemaphore(
+        IntPtr device,
+        ref VkSemaphoreCreateInfo pCreateInfo,
+        IntPtr pAllocator,
+        out IntPtr pSemaphore
+    );
 
     public const uint VK_SUBPASS_EXTERNAL = unchecked((uint)-1);
 }
